@@ -8,6 +8,7 @@ import {MatCard, MatCardContent} from '@angular/material/card';
     MatCardContent
   ],
   templateUrl: './login-form.component.html',
+  standalone: true,
   styleUrl: './login-form.component.css'
 })
 export class LoginFormComponent {

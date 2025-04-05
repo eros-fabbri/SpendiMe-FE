@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  justify-content: center; /* centra orizzontalmente */
+  align-items: center;     /* centra verticalmente */
+  height: 100vh;           /* altezza pari all'intera finestra */
+}
+
+.centered {
+
+  width: 85vw;
+  height: 80vh;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* ombra uniforme intorno */
+  flex-direction: row;
+  display: flex;
+
+}
+
+
+.half {
+  flex: 1;
+}
+
+.right {
+  background-color: red;
+  background-size: cover;
+  background-position: center;
+}
+
+.left {
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
