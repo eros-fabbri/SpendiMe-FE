@@ -8,10 +8,10 @@ import {Observable} from 'rxjs';
 export class AuthService {
   constructor(private http: HttpClient) {}
 
-  login(username: string, password: string): Observable<void> {
+  login(email: string, password: string): Observable<void> {
     return this.http.post<void>(
-      'http://localhost:8080/api/login',  // <-- il tuo endpoint Spring
-      { username, password },
+      'http://localhost:8080/auth/signin',  // <-- il tuo endpoint Spring
+      { email: email, password: password },
       { withCredentials: true }           // <-- fondamentale per usare i cookie
     );
   }

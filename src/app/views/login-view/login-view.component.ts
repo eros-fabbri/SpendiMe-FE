@@ -14,14 +14,14 @@ import {AuthService} from '../../services/auth/auth.service';
   styleUrl: './login-view.component.css'
 })
 export class LoginViewComponent {
-  username = '';
+  email = '';
   password = '';
 
 
   constructor(private auth: AuthService) {}
 
   login() {
-    this.auth.login(this.username, this.password).subscribe({
+    this.auth.login(this.email, this.password).subscribe({
       next: () => console.log('Login effettuato!'),
       error: err => console.error('Errore login:', err)
     });
