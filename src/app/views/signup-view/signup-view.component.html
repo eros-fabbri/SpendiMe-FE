@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="centered">
+    <div class="half left">
+      <form>
+        <input [(ngModel)]="name" name="name" placeholder="Name" required />
+        <input [(ngModel)]="email" name="email" placeholder="Email" required />
+        <input [(ngModel)]="password" name="password" type="password" placeholder="Password" required />
+        <input [(ngModel)]="repeatPassword" name="repeatpassword" type="password" placeholder="Repeat password" required />
+        <button type="submit" (click)="signup()">Login</button>
+      </form>
+    </div>
+    <div class="half right">
+      <p>Ciao! Questa è la metà senza sfondo.</p>
+    </div>
+  </div>
+</div>
