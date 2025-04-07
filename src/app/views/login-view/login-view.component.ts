@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import {LoginFormComponent} from '../../components/login-form/login-form.component';
 import {FormsModule} from '@angular/forms';
 import {AuthService} from '../../services/auth/auth.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login-view',
   imports: [
-    LoginFormComponent,
     FormsModule
   ],
   templateUrl: './login-view.component.html',
@@ -18,11 +18,11 @@ export class LoginViewComponent {
   password = '';
 
 
-  constructor(private auth: AuthService) {}
+  constructor(private auth: AuthService, private router: Router) {}
 
   login() {
     this.auth.login(this.email, this.password).subscribe({
-      next: () => console.log('Login effettuato!'),
+      next: () => this.router.navigate(['dashboard']),
       error: err => console.error('Errore login:', err)
     });
   }

@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+
+.container {
+  display: flex;
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; /* Centra orizzontalmente */
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-container {
+
+  display: flex;
+  width: 13.5%; /* 1/4 dello schermo */
+  height: 100%;
+  flex-direction: column;
+  gap: 2rem;
+  text-align: center;
+  align-items: center; /* Centra verticalmente */
+  font-family: 'Poppins', sans-serif;
+}
+
+.main-view-container {
+  border-radius: 27px;
+  display: flex;
+  background-color: #ffffff; /* Colore di esempio */
+  width: 85%; /* 3/4 dello schermo */
+  height: 95vh;
+}
+
+.profile-container{
+  display: flex;
+  flex-direction: column;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; /* Centra orizzontalmente */
+  margin-bottom: 4rem;
+  margin-top: 4rem;
+}
+
+.default-class{
+  font-size: 25px;
+  font-weight: 600;
+  color: gray;
+
+}
+.active-class{
+  font-size: 25px;
+  font-weight: 600;
+  color: white;
+
+}
+
+
+.nome-text{
+  font-size: 30px;
+  font-weight: 600;
+  color: white;
+}
+
+.email-text{
+  font-size: 17px;
+  font-weight: 400;
+  color: gray;
+}
+
+.cropped-image {
+
+  margin-bottom: 1rem;
+  border-radius: 13px;
+  object-fit: cover;
+}
