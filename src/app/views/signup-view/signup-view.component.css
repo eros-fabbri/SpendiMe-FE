@@ -1,4 +1,5 @@
 .container {
+
   display: flex;
   justify-content: center; /* centra orizzontalmente */
   align-items: center;     /* centra verticalmente */
@@ -6,8 +7,12 @@
 }
 
 .centered {
-
-  width: 85vw;
+  background-image:
+    linear-gradient(to right, rgba(40, 43, 44, 1.0) 0%, rgba(40, 43, 44, 0.93) 50%, transparent 100%),
+    url('../../../assets/bg.png');
+  background-size: cover;
+  background-position: center;
+  width: 80vw;
   height: 80vh;
   padding: 20px;
   border-radius: 20px;
@@ -23,16 +28,41 @@
 }
 
 .right {
-  background-color: red;
   background-size: cover;
   background-position: center;
 }
 
 .left {
-  background-color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+input {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+button {
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #659B5E;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #4C7A46;
 }
 
