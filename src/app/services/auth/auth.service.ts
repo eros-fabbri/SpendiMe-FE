@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {UserDetail} from '../../interfaces/user-detail';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,13 @@ export class AuthService {
     return this.http.post<void>(
       `${this.apiUrl}/auth/signup`,  // <-- il tuo endpoint Spring
       { email: email, password: password, name: name },
+    );
+  }
+
+  getUserDetails(): Observable<UserDetail> {
+    return this.http.get<UserDetail>(
+      `${this.apiUrl}/account`,  // <-- il tuo endpoint Spring
+      { withCredentials: true }           // <-- fondamentale per usare i cookie
     );
   }
 }

@@ -3,13 +3,27 @@ import {LoginViewComponent} from './views/login-view/login-view.component';
 import {authGuard} from './guards/auth.guard';
 import {AppComponent} from './app.component';
 import {SignupViewComponent} from './views/signup-view/signup-view.component';
-import {DashboardComponent} from './views/dashboard/dashboard.component';
+import {MainComponent} from './views/main/main.component';
+import {DashboardComponent} from './components/dashboard/dashboard.component';
+
+// export const routes: Routes = [
+//   { path: '', component: MainComponent, canActivate:[authGuard]},
+//   {path: 'dashboard', component: DashboardComponent},
+//   { path: 'login', component: LoginViewComponent},
+//   { path: 'signup', component: SignupViewComponent},
+//
+//
+// ];
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'dashboard'},
+  {
+    path: '',
+    component: MainComponent,
+    canActivate: [authGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+    ]
+  },
   { path: 'login', component: LoginViewComponent},
-  { path: 'signup', component: SignupViewComponent},
-  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
-
-
 ];
