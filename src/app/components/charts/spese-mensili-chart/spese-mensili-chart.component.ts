@@ -1,121 +1,207 @@
-import {Component, Inject, NgZone, PLATFORM_ID} from '@angular/core';
-import {LineChartModule, AreaChartModule} from '@swimlane/ngx-charts';
-import * as am5 from '@amcharts/amcharts5';
-import * as am5xy from '@amcharts/amcharts5/xy';
-import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
-import {isPlatformBrowser} from '@angular/common';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, parseISO, addDays, subDays } from 'date-fns';
+import { it } from 'date-fns/locale';
+import { Observable, of } from 'rxjs';
+import {Chart} from 'chart.js';
+import {Spesa} from '../../../interfaces/spesa';
+import {SpesaService} from '../../../services/spesa.service';
 
 @Component({
   selector: 'app-spese-mensili-chart',
-  imports: [
-    LineChartModule,
-    AreaChartModule
-  ],
-  templateUrl: './spese-mensili-chart.component.html',
-  styleUrl: './spese-mensili-chart.component.css'
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div class="chart-container">
+      <canvas #speseMensiliCanvas></canvas>
+    </div>
+  `,
+  styles: [`
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px;
+    }
+  `]
 })
-export class SpeseMensiliChartComponent {
-  private root!: am5.Root;
+export class SpeseMensiliChartComponent implements OnInit, AfterViewInit {
+  @ViewChild('speseMensiliCanvas') private speseMensiliCanvas!: ElementRef;
+  private chart: Chart | undefined;
+  private spese: Spesa[] = [];
+  private useMockData = true; // Imposta su false per utilizzare dati reali dal servizio
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone) {}
+  constructor(private spesaService: SpesaService) {}
 
-  // Run the function only in the browser
-  browserOnly(f: () => void) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.zone.runOutsideAngular(() => {
-        f();
-      });
+  ngOnInit(): void {
+    this.loadSpese();
+  }
+
+  ngAfterViewInit(): void {
+    // Se il canvas è pronto ma i dati non sono ancora caricati
+    if (this.speseMensiliCanvas && this.spese.length === 0) {
+      this.loadSpese();
     }
   }
 
-  ngAfterViewInit() {
-    // Chart code goes in here
-    this.browserOnly(() => {
-      let root = am5.Root.new("chartdiv");
+  private loadSpese(): void {
+    const spesaObservable: Observable<Spesa[]> = this.useMockData ?
+      this.getMockSpese() :
+      this.spesaService.getSpese();
 
-      root.setThemes([am5themes_Animated.new(root)]);
-
-      let chart = root.container.children.push(
-        am5xy.XYChart.new(root, {
-          panY: false,
-          layout: root.verticalLayout
-        })
-      );
-
-      // Define data
-      let data = [
-        {
-          category: "Research",
-          value1: 1000,
-          value2: 588
-        },
-        {
-          category: "Marketing",
-          value1: 1200,
-          value2: 1800
-        },
-        {
-          category: "Sales",
-          value1: 850,
-          value2: 1230
-        }
-      ];
-
-      // Create Y-axis
-      let yAxis = chart.yAxes.push(
-        am5xy.ValueAxis.new(root, {
-          renderer: am5xy.AxisRendererY.new(root, {})
-        })
-      );
-
-      // Create X-Axis
-      let xAxis = chart.xAxes.push(
-        am5xy.CategoryAxis.new(root, {
-          renderer: am5xy.AxisRendererX.new(root, {}),
-          categoryField: "category"
-        })
-      );
-      xAxis.data.setAll(data);
-
-      // Create series
-      let series1 = chart.series.push(
-        am5xy.ColumnSeries.new(root, {
-          name: "Series",
-          xAxis: xAxis,
-          yAxis: yAxis,
-          valueYField: "value1",
-          categoryXField: "category"
-        })
-      );
-      series1.data.setAll(data);
-
-      let series2 = chart.series.push(
-        am5xy.ColumnSeries.new(root, {
-          name: "Series",
-          xAxis: xAxis,
-          yAxis: yAxis,
-          valueYField: "value2",
-          categoryXField: "category"
-        })
-      );
-      series2.data.setAll(data);
-
-      // Add legend
-      let legend = chart.children.push(am5.Legend.new(root, {}));
-      legend.data.setAll(chart.series.values);
-
-      // Add cursor
-      chart.set("cursor", am5xy.XYCursor.new(root, {}));
-
-      this.root = root;
+    spesaObservable.subscribe(spese => {
+      this.spese = spese;
+      this.initializeChart();
     });
   }
 
-  ngOnDestroy() {
-    // Clean up chart when the component is removed
-    this.browserOnly(() => {
-      if (this.root) {
-        this.root.dispose();
+  private getMockSpese(): Observable<Spesa[]> {
+    const mockSpese: Spesa[] = [];
+    const oggi = new Date();
+    const inizioMese = startOfMonth(oggi);
+
+    // Generiamo spese casuali per diversi giorni del mese corrente
+    for (let i = 0; i < 40; i++) {
+      // Distribuire le spese nel mese corrente
+      const giornoRandom = Math.floor(Math.random() * 28);
+      const dataSpesa = addDays(inizioMese, giornoRandom);
+
+      // Se la data è nel futuro rispetto a oggi, la spostiamo indietro
+      const dataFinale = dataSpesa > oggi ?
+        subDays(oggi, Math.floor(Math.random() * 10)) :
+        dataSpesa;
+
+      mockSpese.push({
+        id: i + 1,
+        descrizione: `Spesa mock ${i + 1}`,
+        importo: Math.floor(Math.random() * 150) + 5, // Importo tra 5 e 155 euro
+        data: format(dataFinale, 'yyyy-MM-dd'),
+        categoria: this.getCategoriaRandom(),
+        metodoPagamento: this.getMetodoPagamentoRandom()
+      });
+    }
+
+    return of(mockSpese);
+  }
+
+  private getCategoriaRandom(): string {
+    const categorie = ['Alimentari', 'Trasporti', 'Bollette', 'Svago', 'Shopping', 'Casa', 'Salute'];
+    return categorie[Math.floor(Math.random() * categorie.length)];
+  }
+
+  private getMetodoPagamentoRandom(): string {
+    const metodi = ['Carta di credito', 'Contanti', 'Bonifico', 'PayPal', 'Satispay'];
+    return metodi[Math.floor(Math.random() * metodi.length)];
+  }
+
+  private initializeChart(): void {
+    if (!this.speseMensiliCanvas) return;
+
+    const oggi = new Date();
+    const inizioMese = startOfMonth(oggi);
+    const fineMese = endOfMonth(oggi);
+
+    // Genera un array con tutti i giorni del mese corrente
+    const giorniMese = eachDayOfInterval({ start: inizioMese, end: oggi });
+
+    // Calcola le spese totali per ogni giorno del mese
+    const datiSpese = giorniMese.map(giorno => {
+      const speseDiQuestoGiorno = this.spese.filter(spesa => {
+        const dataSpesa = parseISO(spesa.data);
+        return format(dataSpesa, 'yyyy-MM-dd') === format(giorno, 'yyyy-MM-dd');
+      });
+
+      const totaleGiornaliero = speseDiQuestoGiorno.reduce((acc, spesa) =>
+        acc + spesa.importo, 0);
+
+      return {
+        giorno,
+        totale: totaleGiornaliero
+      };
+    });
+
+    const ctx = this.speseMensiliCanvas.nativeElement.getContext('2d');
+
+    if (this.chart) {
+      this.chart.destroy();
+    }
+
+    this.chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: datiSpese.map(d => format(d.giorno, 'd', { locale: it })),
+        datasets: [{
+          label: 'Spese giornaliere',
+          data: datiSpese.map(d => d.totale),
+          backgroundColor: (context) => {
+            const value = context.raw as number;
+            // Gradiente di colori basato sull'importo
+            if (value > 100) return 'rgba(255, 99, 132, 0.7)'; // Rosso per spese alte
+            if (value > 50) return 'rgba(255, 159, 64, 0.7)';  // Arancione per spese medie
+            return 'rgba(75, 192, 192, 0.7)';                  // Verde-acqua per spese basse
+          },
+          borderColor: (context) => {
+            const value = context.raw as number;
+            if (value > 100) return 'rgba(255, 99, 132, 1)';
+            if (value > 50) return 'rgba(255, 159, 64, 1)';
+            return 'rgba(75, 192, 192, 1)';
+          },
+          borderWidth: 1,
+          borderRadius: 5,
+          maxBarThickness: 15
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+            padding: 10,
+            cornerRadius: 6,
+            callbacks: {
+              title: (items) => {
+                if (!items.length) return '';
+                const idx = items[0].dataIndex;
+                return format(datiSpese[idx].giorno, 'EEEE d MMMM', { locale: it });
+              },
+              label: (context) => {
+                return `€ ${context.raw}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              font: {
+                size: 10
+              }
+            }
+          },
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            },
+            ticks: {
+              callback: (value) => `€ ${value}`
+            }
+          }
+        },
+        animation: {
+          duration: 1000,
+          easing: 'easeOutQuart'
+        }
       }
     });
   }
