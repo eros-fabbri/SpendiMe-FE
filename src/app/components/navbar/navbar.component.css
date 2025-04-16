@@ -1,3 +1,7 @@
+.spacer {
+  height: 2rem; /* ad esempio */
+  visibility: hidden; /* invisibile ma mantiene lo spazio */
+}
 
 .profile-container{
   display: flex;
@@ -14,20 +18,29 @@
   font-size: 25px;
   font-weight: 600;
   color: gray;
+  cursor: pointer;
+  user-select: none; /* <-- evita la selezione del testo */
+  opacity: 0.8;
 
 }
 .active-class{
   font-size: 25px;
   font-weight: 600;
   color: white;
-
+  cursor: pointer;
+  user-select: none; /* <-- evita la selezione del testo */
 }
+.default-class:hover{
+  color: lightgray;
+}
+
 
 
 .nome-text{
   font-size: 30px;
   font-weight: 600;
   color: white;
+
 }
 
 .email-text{

@@ -1,14 +1,23 @@
-<div>
+<div class="gap">
   <div class="profile-container">
     <img ngSrc="https://picsum.photos/200/200" class="cropped-image"   width="72"
          height="72"  alt="">
     <div class="nome-text">Ciao, {{userDetails?.name}}</div>
     <div class="email-text">{{userDetails?.email}}</div>
   </div>
-  <div [ngClass]="router.url === '/dashboard' ? 'active-class' : 'default-class'">Dashboard</div>
-  <div [ngClass]="router.url === '/spese' ? 'active-class' : 'default-class'">Spese</div>
+  <div [ngClass]="router.url === '/dashboard' ? 'active-class' : 'default-class'"  routerLink="/dashboard">Dashboard</div>
+  <div class="spacer"></div>
+  <div [ngClass]="router.url === '/spese' ? 'active-class' : 'default-class'"  routerLink="/spese">Spese</div>
+  <div class="spacer"></div>
+
   <div [ngClass]="router.url === '/wallets' ? 'active-class' : 'default-class'">Wallets</div>
+  <div class="spacer"></div>
+
   <div [ngClass]="router.url === '/sommario' ? 'active-class' : 'default-class'">Sommario</div>
+  <div class="spacer"></div>
+
   <div [ngClass]="router.url === '/account' ? 'active-class' : 'default-class'">Account</div>
+  <div class="spacer"></div>
+
   <div [ngClass]="router.url === '/settings' ? 'active-class' : 'default-class'">Settings</div>
 </div>

@@ -15,7 +15,6 @@
   display: flex;
   width: 13.5%; /* 1/4 dello schermo */
   height: 100%;
-  flex-direction: column;
   gap: 2rem;
   text-align: center;
   align-items: center; /* Centra verticalmente */
@@ -23,6 +22,9 @@
 }
 
 .main-view-container {
+  flex-direction: column;
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; /* Centra orizzontalmente */
   border-radius: 27px;
   display: flex;
   background-color: #ffffff; /* Colore di esempio */

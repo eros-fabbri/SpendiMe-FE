@@ -1,13 +1,10 @@
-import { Component } from '@angular/core';
-import {NgClass, NgOptimizedImage} from '@angular/common';
+import {Component} from '@angular/core';
 import {Router, RouterOutlet} from '@angular/router';
 import {NavbarComponent} from '../../components/navbar/navbar.component';
 
 @Component({
   selector: 'app-main',
   imports: [
-    NgOptimizedImage,
-    NgClass,
     NavbarComponent,
     RouterOutlet
   ],

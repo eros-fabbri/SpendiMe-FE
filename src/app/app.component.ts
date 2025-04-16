@@ -1,12 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import {LoginViewComponent} from './views/login-view/login-view.component';
-import {MainComponent} from './views/main/main.component';
+import {RouterOutlet} from '@angular/router';
 import {AuthService} from './services/auth/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MainComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
